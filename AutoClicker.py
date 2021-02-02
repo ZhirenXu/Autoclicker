@@ -1,7 +1,6 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from Function import Login
-from selenium.webdriver.common.by import By
 
 def installDriver():
     pass
@@ -17,19 +16,29 @@ def demo():
     driver.close()
 
 def test():
-    #browser = Login.login()
-    #creditCookie = browser.session.cookies.get_dict()
-    #keyList = list(creditCookie.keys())
-    #key = keyList[0]
+    browser = Login.login()
+    creditCookie = browser.session.cookies.get_dict()
+    keyList = list(creditCookie.keys())
+    key = keyList[0]
     #print(creditCookie)
     #get website
     driver = webdriver.Firefox()
-    #cookie = {'name': key, 'value': creditCookie[key]}
-    #driver.add_cookie(cookie)
+    cookie = {'name': key, 'value': creditCookie[key]}
+    driver.get("https://library.osu.edu/dc")
+    driver.add_cookie(cookie)
+#    driver.close()
     driver.get("https://library.osu.edu/dc/concern/generic_works/s1784n301?locale=en")
-    driver.find_element_by_xpath('//button[@type="button"]/span["Login"]').click()
+    fileManagerUrl = driver.find_element_by_link_text('File Manager')
+    fileManagerUrl.click()
+    driver.quit()
+    #driver.get(fileManagerUrl)
+#    driver.find_element_by_xpath('//button[@type="button"]/span["Login"]').click()
     #driver.find_element_by_link_text("https://library.osu.edu/dc/users/auth/shibboleth?locale=en").click()
     #driver.find_element_by_id("File Manager").click()
+
+def findFileManager(url):
+    pass
+    
 def main(*argv):
     test()
     
