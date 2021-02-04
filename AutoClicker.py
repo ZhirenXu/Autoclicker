@@ -2,10 +2,15 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from Function import Login
+from Function import SimpleCSV
 
 def installDriver():
     pass
-def get 
+def getWorkID():
+    SimpleCSV.readCSV("internal id.csv")
+
+    return workURL
+
 def test():
     browser = Login.login()
     creditCookie = browser.session.cookies.get_dict()
@@ -86,10 +91,10 @@ def main(*argv):
     loginCookie = getCredit()
     workUrlList = getWorkID()
     fileSetList = getSetID()
-    createWorkUrl()
+    #createWorkUrl()
     createThumbnailID(fileSetID)
     createRepMediaID(fileSetID)
-    processUrl(cookie, workUrl, thumbnailID, repMediaID)
+    processUrl(cookie, workUrlList, thumbnailID, repMediaID)
     driver.quit()
 
     
