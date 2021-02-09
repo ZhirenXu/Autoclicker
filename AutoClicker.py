@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from Function import Login
 from Function import SimpleCSV
+import time
 
 def installDriver():
     pass
@@ -17,29 +18,6 @@ def getSetID():
 
     return fileSet
 
-def test():
-    browser = Login.login()
-    creditCookie = browser.session.cookies.get_dict()
-    keyList = list(creditCookie.keys())
-    key = keyList[0]
-    #print(creditCookie)
-    #get website
-    driver = webdriver.Firefox()
-    cookie = {'name': key, 'value': creditCookie[key]}
-    driver.get("https://library.osu.edu/dc")
-    driver.add_cookie(cookie)
-#    driver.close()
-    driver.get("https://library.osu.edu/dc/concern/generic_works/s1784n301?locale=en")
-    fileManagerUrl = driver.find_element_by_link_text('File Manager')
-    fileManagerUrl.click()
-    thumbnailButton = driver.find_element_by_id('thumbnail_id_kh04dr675')
-    thumbnailButton.click()
-    repMediaButton = driver.find_element_by_id('representative_id_kh04dr675')
-    repMediaButton.click()
-    saveButton = driver.find_element(By.XPATH, '//button[text()="Save"]')
-    saveButton.click()
-    driver.quit()
-
 def getCredit():
     browser = Login.login()
     creditCookie = browser.session.cookies.get_dict()
@@ -49,38 +27,56 @@ def getCredit():
 
     return cookie
 
-def processUrl(cookie, workUrl, thumbnailID, repMediaID):
+def processUrl(cookie, workUrl, thumbnailList, repMediaList):
+    driver = webdriver.Firefox()
     driver.get("https://library.osu.edu/dc")
     driver.add_cookie(cookie)
     for url in workUrl:
         try:
-            driver.get(workUrl)
+            driver.get(url)
+            print("Current URL: ", url)
         except:
             print("Fail to open website!\n")
         try:
+            driver.implicitly_wait(3)
             fileManagerUrl = driver.find_element_by_link_text('File Manager')
             fileManagerUrl.click()
         except:
             print("Fail to find File Manager Button!\n")
         try:
-            thumbnailButton = driver.find_element_by_id(thumbnailID)
+            driver.implicitly_wait(3)
+            sortButton = driver.find_element(By.XPATH, '//button[text()="Sort alphabetically"]')
+            sortButton.click()
+            print("Sort clicked")
+        except:
+            print("Fail to sort!")
+        try:
+            driver.implicitly_wait(3)
+            thumbnailButton = driver.find_element_by_id(thumbnailList.pop(0))
             thumbnailButton.click()
+            print("Thumbnail clicked")
         except:
             print("Fail to find thumbnail button!\n")
         try:
-            repMediaButton = driver.find_element_by_id(repMediaID)
+            driver.implicitly_wait(3)
+            repMediaButton = driver.find_element_by_id(repMediaList.pop(0))
             repMediaButton.click()
+            print("repMedia clicked")
         except:
             print("Fail to find representative button!\n")
         try:
             saveButton = driver.find_element(By.XPATH, '//button[text()="Save"]')
+            time.sleep(3)
             saveButton.click()
+            time.sleep(1)
+            driver.implicitly_wait(3)
         except:
             print("Fail to find save button!\n")
 
 def createWorkUrl(workIDList):
+    workUrl = []
     for workID in workIDList:
-        workUrl = "https://library.osu.edu/dc/concern/generic_works/" + workID + "?locale=en"
+        workUrl.append(workID + "?locale=en")
 
     return workUrl
 
@@ -97,7 +93,7 @@ def createRepMediaID(fileSetList):
         repMediaList.append("representative_id_" + fileSet)
 
     return repMediaList
-    
+        
 def main(*argv):
     loginCookie = getCredit()
     workIDList = getWorkID()
@@ -106,7 +102,7 @@ def main(*argv):
     
     thumbnailList = createThumbnailID(fileSetList)
     repMediaList = createRepMediaID(fileSetList)
-    processUrl(cookie, workUrlList, thumbnailList, repMediaList)
+    processUrl(loginCookie, workUrlList, thumbnailList, repMediaList)
     driver.quit()
 
     
