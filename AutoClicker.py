@@ -6,10 +6,16 @@ from Function import SimpleCSV
 
 def installDriver():
     pass
-def getWorkID():
-    SimpleCSV.readCSV("internal id.csv")
 
-    return workURL
+def getWorkID():
+    workID = SimpleCSV.readCSV("internal id.csv")
+
+    return workID
+
+def getSetID():
+    fileSet = SimpleCSV.readCSV("file set.csv")
+
+    return fileSet
 
 def test():
     browser = Login.login()
@@ -57,12 +63,12 @@ def processUrl(cookie, workUrl, thumbnailID, repMediaID):
         except:
             print("Fail to find File Manager Button!\n")
         try:
-            thumbnailButton = driver.find_element_by_id('thumbnailID')
+            thumbnailButton = driver.find_element_by_id(thumbnailID)
             thumbnailButton.click()
         except:
             print("Fail to find thumbnail button!\n")
         try:
-            repMediaButton = driver.find_element_by_id('repMediaID')
+            repMediaButton = driver.find_element_by_id(repMediaID)
             repMediaButton.click()
         except:
             print("Fail to find representative button!\n")
@@ -72,29 +78,35 @@ def processUrl(cookie, workUrl, thumbnailID, repMediaID):
         except:
             print("Fail to find save button!\n")
 
-def createWorkUrl(workID):
-    workUrl = "https://library.osu.edu/dc/concern/generic_works/" + workID + "?locale=en"
+def createWorkUrl(workIDList):
+    for workID in workIDList:
+        workUrl = "https://library.osu.edu/dc/concern/generic_works/" + workID + "?locale=en"
 
     return workUrl
 
-def createThumbnailID(fileSetID):
-    thumbnailID = "thumbnail_id_" + fileSetID
+def createThumbnailID(fileSetList):
+    thumbnailList = []
+    for fileSet in fileSetList:
+        thumbnailList.append("thumbnail_id_" + fileSet)
 
-    return thumbnailID
+    return thumbnailList
 
-def createRepMediaID(fileSetID):
-    repMediaID = "representative_id_" + fileSetID
+def createRepMediaID(fileSetList):
+    repMediaList = []
+    for fileSet in fileSetList:
+        repMediaList.append("representative_id_" + fileSet)
 
-    return repMediaID
+    return repMediaList
     
 def main(*argv):
     loginCookie = getCredit()
-    workUrlList = getWorkID()
+    workIDList = getWorkID()
     fileSetList = getSetID()
-    #createWorkUrl()
-    createThumbnailID(fileSetID)
-    createRepMediaID(fileSetID)
-    processUrl(cookie, workUrlList, thumbnailID, repMediaID)
+    workUrlList = createWorkUrl(workIDList)
+    
+    thumbnailList = createThumbnailID(fileSetList)
+    repMediaList = createRepMediaID(fileSetList)
+    processUrl(cookie, workUrlList, thumbnailList, repMediaList)
     driver.quit()
 
     
