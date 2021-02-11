@@ -4,6 +4,11 @@ from selenium.webdriver.common.by import By
 from Function import Login
 from Function import SimpleCSV
 import time
+import progressbar
+
+def loadUrlSession(session, url):
+    html = session.get(url)
+    return html
 
 def installDriver():
     pass
@@ -31,9 +36,14 @@ def processUrl(cookie, workUrl, thumbnailList, repMediaList):
     driver = webdriver.Firefox()
     driver.get("https://library.osu.edu/dc")
     driver.add_cookie(cookie)
-    for url in workUrl:
+    urlAmount = len(workUrl)
+    k = 0
+    
+    for k in progressbar.progressbar(range(urlAmount), redirect_stdout=True):
         try:
+            url = workUrl.pop(0)
             driver.get(url)
+            #html = loadUrlSession(session, url)
             print("Current URL: ", url)
         except:
             print("Fail to open website!\n")
@@ -66,7 +76,7 @@ def processUrl(cookie, workUrl, thumbnailList, repMediaList):
             print("Fail to find representative button!\n")
         try:
             saveButton = driver.find_element(By.XPATH, '//button[text()="Save"]')
-            time.sleep(3)
+            time.sleep(4)
             saveButton.click()
             time.sleep(1)
             driver.implicitly_wait(3)
@@ -96,6 +106,7 @@ def createRepMediaID(fileSetList):
         
 def main(*argv):
     loginCookie = getCredit()
+    #loginCookie = getCredit(session)
     workIDList = getWorkID()
     fileSetList = getSetID()
     workUrlList = createWorkUrl(workIDList)
