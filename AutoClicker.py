@@ -78,10 +78,12 @@ def processUrl(cookie, workUrl, thumbnailList, repMediaList):
             saveButton = driver.find_element(By.XPATH, '//button[text()="Save"]')
             time.sleep(4)
             saveButton.click()
-            time.sleep(1)
+            time.sleep(4)
             driver.implicitly_wait(3)
         except:
             print("Fail to find save button!\n")
+            continue
+    driver.quit()
 
 def createWorkUrl(workIDList):
     workUrl = []
@@ -114,7 +116,6 @@ def main(*argv):
     thumbnailList = createThumbnailID(fileSetList)
     repMediaList = createRepMediaID(fileSetList)
     processUrl(loginCookie, workUrlList, thumbnailList, repMediaList)
-    driver.quit()
 
     
 if __name__ == "__main__":
