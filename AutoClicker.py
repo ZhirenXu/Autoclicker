@@ -117,6 +117,10 @@ def main(*argv):
     repMediaList = createRepMediaID(fileSetList)
     processUrl(loginCookie, workUrlList, thumbnailList, repMediaList)
 
+    print("Process finished. Hit enter to exit.")
+    input()
+    sys.exit()
+
     
 if __name__ == "__main__":
     main()
