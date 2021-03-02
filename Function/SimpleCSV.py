@@ -17,6 +17,7 @@ def readCSV(csvName):
         # del the column name read for first line
         urlList.pop(0)
         print ("Open input CSV success.")
+        inFile.close()
     except:
         print("Fail to open input CSV. Press enter to exit.")
         key = input()
